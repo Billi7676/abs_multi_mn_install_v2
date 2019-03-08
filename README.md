@@ -102,6 +102,22 @@ To check if the masternode started succesfully type next command on your vps:
 In a multi node environment you always need to use -datadir=path_to_abscore option in your commands. This way you select a specified node that you want to send cmds to.
 
 
+## Create 2GB swap space
+
+For better stability during initial phase when all nodes need to sync with the network is recommended to create a swap file. This is possible on the KWM type vps. On OpenVZ vps, in most cases this is already done by the vps provider and can't be modified.
+
+To create a 2GB swap file run the next commands, one at a time:
+
+	dd if=/dev/zero of=/mnt/swap bs=1M count=2000
+	mkswap /mnt/swap
+	chmod 0600 /mnt/swap
+	swapon /mnt/swap
+	echo '/mnt/swap swap swap defaults 0 0' | sudo tee -a /etc/fstab
+	sudo sysctl vm.swappiness=10
+	echo "vm.swappiness = 10" >> /etc/sysctl.conf
+
+
 Congratulations, your multi node vps is running! 
+
 
 *If you run into problems ask for help in ABS discord support channel.*
