@@ -8,7 +8,7 @@ This script is used to install multiple masternode of Absolute coin (ABS) on a s
 To install the node you need the following:
 - a control wallet on your PC, MAC or Linux computer (v12.2.4 at the time of writing)
 - 2500 ABS coins for each node that will be used as collateral
-- a vps server running Ubuntu Linux 16.04 with multiple ip addresses
+- a vps server running Ubuntu Linux 16.04 with multiple ip addresses (allocate 512MB of RAM per node or setup a swap file 2x amount of RAM - check the end of this guide for how to setup swap)
 
 
 ## How to do it
