@@ -14,8 +14,8 @@ declare -a RPC_PORTS
 declare -a ABS_PRIVATE_KEYS
 
 # when new wallet release is published the next two lines needs to be updated
-WALLET_VER="v12.2.4"
-WALLET_FILE="absolute_12.2.4_linux.tar.gz"
+WALLET_VER="v12.2.5"
+WALLET_FILE="absolutecore-0.12.2.5-x86_64-linux-gnu.tar.gz"
 
 WALLET_URL="https://github.com/absolute-community/absolute/releases/download/$WALLET_VER"
 
@@ -37,7 +37,7 @@ function printWarning {
 function extractDaemon
 {
 	echo "Extracting..."
-	tar -zxvf "$WALLET_FILE" && mv "$WALLET_DIR_NAME" "$WALLET_PATH"
+	tar -zxvf "$WALLET_FILE" && mv "$WALLET_DIR_NAME/bin" "$WALLET_PATH"
 	if [ -f "/usr/local/bin/absolute-cli" ]; then
 		rm /usr/local/bin/absolute-cli
 	fi
@@ -58,14 +58,14 @@ function setupNode
 	{
 		printf "\n#--- basic configuration --- \nrpcuser=$ABS_USER\nrpcpassword=$RPC_PASS\nrpcport=$RPC_PORT\nbind=$MN_IP:$ABS_PORT\nrpcbind=127.0.0.1:$RPC_PORT\nexternalip=$MN_IP:$ABS_PORT\ndaemon=1\nlisten=1\nserver=1\nmaxconnections=256\nrpcallowip=127.0.0.1\n"
 		printf "\n#--- masternode ---\nmasternode=1\nmasternodeprivkey=$PRIVKEY\n"
-		printf "\n#--- new nodes ---\naddnode=45.77.138.219:18888\naddnode=192.3.134.140:18888\naddnode=107.174.102.130:18888\naddnode=107.173.70.103:18888\naddnode=107.173.70.105:18888\naddnode=107.174.142.252:18888\naddnode=54.93.66.231:18888\naddnode=66.23.197.121:18888\n"			
+		printf "\n#--- new nodes ---\naddnode=45.77.138.219:18888\naddnode=192.3.134.140:18888\naddnode=107.174.102.130:18888\naddnode=107.173.70.103:18888\naddnode=107.173.70.105:18888\naddnode=107.174.142.252:18888\naddnode=54.93.66.231:18888\naddnode=66.23.197.121:18888\n"
 		printf "addnode=45.63.99.215:18888\naddnode=45.77.134.248:18888\naddnode=140.82.46.194:18888\naddnode=139.99.96.203:18888\naddnode=139.99.40.157:18888\naddnode=139.99.41.35:18888\naddnode=139.99.41.198:18888\naddnode=139.99.44.0:18888\n"
 	} > "$ABS_CONF_FILE"
 	printSuccess "...done!"
 	echo
 }
 
-function setupSentinel 
+function setupSentinel
 {
 	echo "*** Installing sentinel for masternode $((count+1)) ***"
 	cd "$ABSCORE_PATH" || exit 1
@@ -127,13 +127,13 @@ printf "ABS nodes will be installed in curent path!\n\n"
 # check ubuntu version - we need 16.04
 if [ -r /etc/os-release ]; then
 	. /etc/os-release
-	if [ "${VERSION_ID}" != "16.04" ] ; then
-		echo "Script needs Ubuntu 16.04! Exiting..."
+	if [ "${VERSION_ID}" != "16.04" || "${VERSION_ID}" != "18.04" ] ; then
+		echo "Script needs Ubuntu! Exiting..."
 		echo
 		exit 0
 	fi
 else
-	echo "Operating system is not Ubuntu 16.04! Exiting..."
+	echo "Operating system is not Ubuntu! Exiting..."
 	echo
 	exit 0
 fi
@@ -153,9 +153,9 @@ fi
 # check for running daemon and kill it
 RUNNING_DAEMONS=$(pgrep absoluted -c)
 if [ "$RUNNING_DAEMONS" -gt 0 ]; then
-	printWarning "Found ABS daemon running! Killing it..."
+	printWarning "Found ABS daemon running! Kill it, then wait 30s..."
 	killall -9 absoluted
-	sleep 20
+	sleep 30
 	if [ -n "$(pgrep absoluted)" ]; then
 		printWarning "ABS daemon respawn! Script can't run with ABS demon running!"
 		printWarning "Check your vps and stop ABS service(s)! Exiting..."
