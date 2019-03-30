@@ -38,6 +38,7 @@ function extractDaemon
 {
 	echo "Extracting..."
 	tar -zxvf "$WALLET_FILE" && mv "$WALLET_DIR_NAME/bin" "$WALLET_PATH"
+	rm -r "$WALLET_DIR_NAME"
 	if [ -f "/usr/local/bin/absolute-cli" ]; then
 		rm /usr/local/bin/absolute-cli
 	fi
@@ -124,10 +125,10 @@ printf "\n%s" "Installed OS: $(cut -d':' -f2 <<< "$(lsb_release -d)")"
 printf "\n%s\n" "We are now in $(pwd) directory"
 printf "ABS nodes will be installed in curent path!\n\n"
 
-# check ubuntu version - we need 16.04
+# check ubuntu version - we need ubuntu
 if [ -r /etc/os-release ]; then
 	. /etc/os-release
-	if [ "${VERSION_ID}" != "16.04" || "${VERSION_ID}" != "18.04" ] ; then
+	if [ "${ID}" != "ubuntu" ] ; then
 		echo "Script needs Ubuntu! Exiting..."
 		echo
 		exit 0
@@ -234,8 +235,6 @@ printSuccess "...done!"
 echo
 echo "*** Install ABS daemon dependencies ***"
 apt-get install nano mc dbus ufw fail2ban htop git pwgen python virtualenv python-virtualenv software-properties-common -y -qq
-apt-get install libboost-system1.58.0 libboost-filesystem1.58.0 libboost-program-options1.58.0 libboost-thread1.58.0 libboost-chrono1.58.0 -y -qq
-apt-get install libzmq5 libevent-pthreads-2.0-5 libminiupnpc10 libevent-2.0-5 -y -qq
 add-apt-repository ppa:bitcoin/bitcoin -y
 apt-get update -y -qq
 apt-get upgrade -y -qq
