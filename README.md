@@ -6,9 +6,9 @@ This script is used to install multiple masternode of Absolute coin (ABS) on a s
 ## What you need
 
 To install the node you need the following:
-- a control wallet on your PC, MAC or Linux computer (v12.2.4 at the time of writing)
+- a control wallet on your PC, MAC or Linux computer
 - 2500 ABS coins for each node that will be used as collateral
-- a vps server running Ubuntu Linux 16.04 with multiple ip addresses (allocate 512MB of RAM per node or setup a swap file 2x amount of RAM - check the end of this guide for how to setup swap)
+- a vps server running Ubuntu Linux with multiple ip addresses (allocate 384-512MB of RAM per node or setup a swap file 2x amount of RAM - check the end of this guide for how to setup swap)
 
 
 ## How to do it
@@ -91,11 +91,11 @@ Check that the last block is the one as on ABS explorer found here:
 
 Also note that the script will display at the end which ip is associated with which private key. You will need this info to set up masternode.conf file corectly.
 
-After your node is synced with the network, switch to you control wallet and start your masternodes. Open masternode tab, select each alias you just created from the masternode list and click the Start alias button. You should get a "Successfuly started MNx" prompt.
+After your node is synced with the network, switch to your control wallet and start your masternodes. Open masternode tab, select each alias you just created from the masternode list and click the Start alias button. You should get a "Successfuly started MNx" prompt.
 
-Now you need to wait another 20 minutes and the status of your masternode should be Enabled.
+Now you need to wait another 20 minutes and the status of your masternodes should be Enabled.
 
-To check if the masternode started succesfully type next command on your vps:
+To check if a masternode was started succesfully type next command on your vps:
 
 	absolute-cli -datadir=/root/.absolutecore1 masternode status
 	
