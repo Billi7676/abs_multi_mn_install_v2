@@ -12,10 +12,11 @@ declare -r ABS_UNIT_FILE="absmn"
 declare -a IP_LIST
 declare -a RPC_PORTS
 declare -a ABS_PRIVATE_KEYS
+declare -a BLS_PRIVATE_KEYS
 
 # when new wallet release is published the next two lines needs to be updated
-WALLET_VER="v12.2.5"
-WALLET_FILE="absolutecore-0.12.2.5-x86_64-linux-gnu.tar.gz"
+WALLET_VER="v0.13.0.1"
+WALLET_FILE="absolutecore-0.13.0-x86_64-linux-gnu.tar.gz"
 
 WALLET_URL="https://github.com/absolute-community/absolute/releases/download/$WALLET_VER"
 
@@ -58,9 +59,9 @@ function setupNode
 	mkdir -p "$ABSCORE_PATH" && touch "$ABS_CONF_FILE"
 	{
 		printf "\n#--- basic configuration --- \nrpcuser=$ABS_USER\nrpcpassword=$RPC_PASS\nrpcport=$RPC_PORT\nbind=$MN_IP:$ABS_PORT\nrpcbind=127.0.0.1:$RPC_PORT\nexternalip=$MN_IP:$ABS_PORT\ndaemon=1\nlisten=1\nserver=1\nmaxconnections=256\nrpcallowip=127.0.0.1\n"
-		printf "\n#--- masternode ---\nmasternode=1\nmasternodeprivkey=$PRIVKEY\n"
-		printf "\n#--- new nodes ---\naddnode=45.77.138.219:18888\naddnode=192.3.134.140:18888\naddnode=107.174.102.130:18888\naddnode=107.173.70.103:18888\naddnode=107.173.70.105:18888\naddnode=107.174.142.252:18888\naddnode=54.93.66.231:18888\naddnode=66.23.197.121:18888\n"
-		printf "addnode=45.63.99.215:18888\naddnode=45.77.134.248:18888\naddnode=140.82.46.194:18888\naddnode=139.99.96.203:18888\naddnode=139.99.40.157:18888\naddnode=139.99.41.35:18888\naddnode=139.99.41.198:18888\naddnode=139.99.44.0:18888\n"
+		printf "\n#--- masternode ---\nmasternode=1\nmasternodeprivkey=$PRIVKEY\nmasternodeblsprivkey=$BLS_PRIVKEY\n"
+		printf "\n#--- new nodes ---\naddnode=118.69.72.95:18888\naddnode=80.211.81.251:18888\naddnode=88.198.119.136:18888\naddnode=46.97.97.38:18888\naddnode=62.121.77.173:18888\n"
+		printf "addnode=45.77.138.219:18888\naddnode=95.216.209.25:18888\naddnode=116.203.202.68:18888\naddnode=95.217.232.25:18888\naddnode=116.203.255.12:18888\naddnode=168.119.97.188:18888\n"
 	} > "$ABS_CONF_FILE"
 	printSuccess "...done!"
 	echo
@@ -213,7 +214,9 @@ while [ "$count" -lt "$IPS_NO" ]; do
 	echo
 	printSuccess "Masternode $((count+1)) will be configured for ip ${IP_LIST[$count]}."
 	read -p 'Enter masternode '$((count+1))' private key: ' priv_key
+	read -p 'Enter masternode '$((count+1))' bls private key: ' bls_priv_key
 	ABS_PRIVATE_KEYS["$count"]="$priv_key"
+	BLS_PRIVATE_KEYS["$count"]="$bls_priv_key"
 	((++count))
 	sleep 1
 done
@@ -234,11 +237,7 @@ printSuccess "...done!"
 
 echo
 echo "*** Install ABS daemon dependencies ***"
-apt-get install nano mc dbus ufw fail2ban htop git pwgen python virtualenv python-virtualenv software-properties-common -y -qq
-add-apt-repository ppa:bitcoin/bitcoin -y
-apt-get update -y -qq
-apt-get upgrade -y -qq
-apt-get install libdb4.8-dev libdb4.8++-dev -y -qq
+apt-get install nano mc dbus ufw fail2ban htop git pwgen python virtualenv software-properties-common -y -qq
 printSuccess "...done!"
 
 echo
@@ -277,11 +276,13 @@ for PRIVKEY in "${ABS_PRIVATE_KEYS[@]}"; do
 	SENTINEL_PATH="$ABSCORE_PATH/sentinel"
 	SENTINEL_CONF_FILE="$SENTINEL_PATH/sentinel.conf"
 	ABS_UNIT="$SYSTEMD_UNIT_PATH/$ABS_UNIT_FILE$((count+1)).service"
+	BLS_PRIVKEY="${BLS_PRIVKEY[$count]}"
 
 	echo
 	printSuccess "Configure ABS masternode $((count+1)) in $ABSCORE_PATH with following settings:"
 	printSuccess "  - ip: $MN_IP:$ABS_PORT"
 	printSuccess "  - private key: $PRIVKEY"
+	printSuccess "  - bls private key: $BLS_PRIVKEY"
 	echo
 	setupNode
 	setupSentinel
@@ -298,7 +299,11 @@ echo "*** Following nodes were set up ***"
 count=0
 for PRIVKEY in "${ABS_PRIVATE_KEYS[@]}"; do
 	MN_IP="${IP_LIST[$count]}"
-	printSuccess "Node $((count+1)) was set up on ip $MN_IP:$ABS_PORT with private key $PRIVKEY"
+	BLS_PRIVKEY="${BLS_PRIVKEY[$count]}"
+	printSuccess "Node $((count+1)) was set up on ip $MN_IP:$ABS_PORT with following private keys:"
+	printSuccess "   masternode privkey: $PRIVKEY"
+	printSuccess "   masternode bls privkey: $BLS_PRIVKEY"
+	echo ""
 	((++count))
 done
 
