@@ -209,6 +209,7 @@ echo
 # read privatekeys from console
 echo "*** Input private keys for each masternode ***"
 echo "Generate private key(s) in control wallet > debug console with this command: masternode genkey"
+echo "Generate bls private key(s) in control wallet > debug console with this command: bls generate"
 count=0
 while [ "$count" -lt "$IPS_NO" ]; do
 	echo
@@ -276,7 +277,7 @@ for PRIVKEY in "${ABS_PRIVATE_KEYS[@]}"; do
 	SENTINEL_PATH="$ABSCORE_PATH/sentinel"
 	SENTINEL_CONF_FILE="$SENTINEL_PATH/sentinel.conf"
 	ABS_UNIT="$SYSTEMD_UNIT_PATH/$ABS_UNIT_FILE$((count+1)).service"
-	BLS_PRIVKEY="${BLS_PRIVKEY[$count]}"
+	BLS_PRIVKEY="${BLS_PRIVATE_KEYS[$count]}"
 
 	echo
 	printSuccess "Configure ABS masternode $((count+1)) in $ABSCORE_PATH with following settings:"
@@ -299,7 +300,7 @@ echo "*** Following nodes were set up ***"
 count=0
 for PRIVKEY in "${ABS_PRIVATE_KEYS[@]}"; do
 	MN_IP="${IP_LIST[$count]}"
-	BLS_PRIVKEY="${BLS_PRIVKEY[$count]}"
+	BLS_PRIVKEY="${BLS_PRIVATE_KEYS[$count]}"
 	printSuccess "Node $((count+1)) was set up on ip $MN_IP:$ABS_PORT with following private keys:"
 	printSuccess "   masternode privkey: $PRIVKEY"
 	printSuccess "   masternode bls privkey: $BLS_PRIVKEY"
