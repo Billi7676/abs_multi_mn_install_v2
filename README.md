@@ -8,7 +8,7 @@ This script is used to install multiple masternode of Absolute coin (ABS) on a s
 To install the node you need the following:
 - a control wallet on your PC, MAC or Linux computer
 - 2500 ABS coins for each node that will be used as collateral
-- a vps server running Ubuntu Linux 18.04 or 20.04 with multiple ip addresses (allocate 512MB of RAM per node or setup a swap file 2x amount of RAM - check the end of this guide for how to setup swap)
+- a vps server running Ubuntu Linux 18.04 or 20.04 with multiple ip addresses (allocate 512MB of RAM per node and setup a swap file 2x amount of RAM - check the end of this guide for how to setup swap)
 
 
 ## How to do it
@@ -32,43 +32,13 @@ You need to wait for 15 confirmations before you can obtain transaction id and i
 
 	masternode outputs
 
-To connect your vps with the cold wallet you need a masternode private key which is obtained with this command run in debug console:
-
-	masternode genkey
-
-This private key is needed later when you run install script. Generate as many private keys you need, one for every node you want to setup.
-
-This key is needed for a while until the network is upgraded. In the future there will be another mechanism (bls private and public keys pair) to link masternode vps with the control wallet.
-
-To get the bls private key pair run this command in debug console:
+To connect your vps with the cold wallet you need a bls masternode private key which is obtained with this command run in debug console:
 
 	bls generate
 
-Again, generate as many bls pairs as you need later with the script.
+Generate as many bls pairs as you need later with the script.
 
-Now open the masternode configuration file from the control wallet (Tools > Open masternode configuration file) and configure the masternode using the example present in the file.
-You need the following information to create the masternode line, separated by one space:
-- masternode alias
-- vps ip and port
-- masternode private key
-- transaction id
-- output index
-
-Example line:
-
-	MN1 207.246.76.60:18888 93HaYBVUCYjEMeeH1Y4sBGLALQZE1Yc1K64xiqgX37tGBDQL8Xg 2bcd3c84c84f87eaa86e4e56834c92927a07f9e18718810b92e0d0324456a67c 0
-
-You need to have one line for each ip your vps has. To be sure which private key is associated with each ip, check the script output and make sure you have associated them right.
-
-Save this file and enable masternode tab in your ABS control wallet (Setting > Options > Wallet > Show mastenodes tab)
-
-Restart your Absolute wallet, the look for masternode alias just created above in masternode tab, select it from the list and click Start Alias button (before starting your node you should check that vps cold node is synced too).
-
-<br />
-
-<strong>Following section is needed after block 970000</strong>
-
-We will need two new addresses - owner address (must be new and unused) and voting address - run these 2 cmds in debug console:
+From v13 wallet, for each masternode we will need two new addresses - owner address (must be new and unused) and voting address - run these 2 cmds in debug console to get them:
 
 	getaccountaddress MN1-OWN
 	getaccountaddress MN1-VOT
@@ -126,11 +96,9 @@ Check that the last block is the one as on ABS explorer found here:
 
 	http://explorer.absify.me
 
-Also note that the script will display at the end which ip is associated with which private key. You will need this info to set up masternode.conf file corectly.
+Also note that the script will display at the end which ip is associated with which private key. You will need this info to set up protx commands corectly.
 
-After your node is synced with the network, switch to your control wallet and start your masternodes. Open masternode tab, select each alias you just created from the masternode list and click the Start alias button. You should get a "Successfuly started MNx" prompt.
-
-Now you need to wait another 20 minutes and the status of your masternodes should be Enabled.
+After your node is synced with the network, switch to your control wallet and run part 3 commands in debug console.
 
 To check if a masternode was started succesfully type next command on your vps:
 
@@ -146,8 +114,6 @@ In a multi node environment you always need to use <small>-datadir=path_to_absco
 <br />
 
 **3. On your control wallet**
-
-<strong><small>Note: This part is only needed after block 970000!</small></strong>
 
 <br />
 
