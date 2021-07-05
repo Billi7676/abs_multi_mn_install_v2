@@ -203,6 +203,40 @@ echo "${IP_LIST[*]}"
 printSuccess "...done!"
 echo
 
+echo
+echo "*** IPs confirmation ***"
+count=0
+ip_removed=0
+printSuccess "Confirm IPs for wich we will install a node with 1 for yes and 2 for no..."
+while [ "$count" -lt "$IPS_NO" ]; do
+  PS3="Do you want to setup a node for ip ${IP_LIST[$count]}: "
+  select choice  in yes no; do
+        case $choice in
+          yes)
+            ((++count))
+            echo
+            break
+            ;;
+          no)
+            unset 'IP_LIST[$count]'
+            ((++count))
+            ((++ip_removed))
+            echo
+            break
+            ;;
+        esac
+  done
+done
+IP_LIST=("${IP_LIST[@]}")
+IPS_NO=$(("$IPS_NO"-"$ip_removed"))
+if (("$IPS_NO" == 0)); then
+        printWarning "There are no confirmed IPs to setup masternodes on! Exiting..."
+        echo
+        exit 1
+fi
+echo
+
+
 # find open rpc ports
 echo
 echo "*** Find necessary open rpc ports ***"
